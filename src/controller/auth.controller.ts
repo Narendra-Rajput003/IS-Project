@@ -32,7 +32,7 @@ class AuthController {
         try {
             const body: IAuth = req.body
             const { success } = AuthSchema.safeParse(body);
-            console.log(success)
+
             if (!success) {
                 return res.status(400).json({ message: "Invalid inputs" });
             }
@@ -51,12 +51,11 @@ class AuthController {
             await newUser.save();
             // generate random otp 
             const otp = otpGenerator.generate(6, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
-            console.log(otp);
 
-           const token=crypto.randomBytes(20).toString("hex");
-           const url=`https://www.innobyteservices.com//auth/verify-email/${token}`;
-           
-            await sendEmail(body.email,`${sendConfirmationEmail(otp)}`,`Your Link for email verification is ${url}.`)
+            const token = crypto.randomBytes(20).toString("hex");
+            const url = `https://www.innobyteservices.com//auth/verify-email/${token}`;
+
+            await sendEmail(body.email, `OTP Verification Email `, sendConfirmationEmail(otp, url))
 
             return res.status(201).json({ message: "User created successfully" });
         } catch (error) {
@@ -107,10 +106,10 @@ class AuthController {
             if (!userPayload || !userPayload.userId) {
                 return res.status(401).json({ message: "Unauthorized: No user ID found" });
             }
-            
+
             const userId = userPayload.userId;
             const user = await User.findById(userId).select("-password");
-           
+
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
             }
