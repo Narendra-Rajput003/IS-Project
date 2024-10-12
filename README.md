@@ -23,10 +23,10 @@ This project is a web application built using Express.js and TypeScript, providi
  4. Start the server
  -  npm run dev
 
- 5 Api End-Points :
+ 5. Api End-Points :
     POST - http://localhost:PORT/api/v1/auth/signUp - {username,email,password}   
-    POST - http://localhost:8000/api/v1/auth/signIn - {email,password}
-    GET  - http://localhost:8000/api/v1/auth/profile
+    POST - http://localhost:PORT/api/v1/auth/signIn - {email,password}
+    GET  - http://localhost:PORT/api/v1/auth/profile
 
 
 
