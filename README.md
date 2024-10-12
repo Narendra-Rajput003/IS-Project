@@ -1,13 +1,27 @@
-# Express Js With Typescript  🙌
+# Express.js with TypeScript Project
 
-## After cloning run the below command to run the project
+## Description
+This project is a web application built using Express.js and TypeScript, providing a robust and type-safe backend structure.
 
-```js
-npm install && npm run dev
-```
+## Prerequisites
+- Node.js (version 14.x or later recommended)
+- npm (usually comes with Node.js)
 
-**Now All Set you can open below url to see your page**
+## Setup Instructions
 
-```js 
-http://localhost:8000
-```
+### 1. Clone the repository
+```bash
+ git clone <your-repo-url> 
+ cd <your-repo-folder>
+
+### 2. Install dependencies
+```bash
+ npm install
+
+### 3. Configure the environment
+- Copy the example environment file and update it with your settings
+
+### 4. Start the server
+```bash
+  npm run dev
+
