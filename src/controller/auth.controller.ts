@@ -7,7 +7,7 @@ import { sendEmail } from "../utils/mailSender.js";
 import otpGenerator from "otp-generator"
 import crypto from "crypto"
 import sendConfirmationEmail from "../mail/templetes/sendConfirmationEmail.js";
-import { redis, validateRedisConnection } from "../config/redis.config.js";
+import {  validateRedisConnection } from "../config/redis.config.js";
 import { getUserFromCache, setUserToCache } from "../services/cacheServices.js";
 
 
@@ -106,51 +106,69 @@ class AuthController {
     
   
     static async getUser(req: Request, res: Response) {
+        // If make fast api using cacheing 
+        // try {
+        //     const isRedisConnected = await validateRedisConnection();
+        //     if (!isRedisConnected) {
+        //         return res.status(500).json({ message: "Redis connection error" });
+        //     }
+    
+        //     const userId = (req as any).userId; // Consider creating a custom Request type with userId
+        //     console.log(`Fetching user:${userId}`);
+    
+        //     try {
+        //         // Try to get user from cache
+        //         const cachedUser = await getUserFromCache(userId);
+                
+        //         if (cachedUser) {
+        //             console.log(`Cache hit for user:${userId}`);
+        //             return res.status(200).json({ user: cachedUser });
+        //         }
+    
+        //         console.log(`Cache miss for user:${userId}`);
+        //         // User not in cache, fetch from database
+        //         const user: IAuth | null = await User.findById(userId);
+                
+        //         if (!user) {
+        //             return res.status(404).json({ message: "User not found" });
+        //         }
+    
+        //         // Cache the user
+        //         await setUserToCache(userId, user);
+    
+        //         return res.status(200).json({ user });
+        //     } catch (cacheError) {
+        //         console.error('Cache operation failed:', cacheError);
+        //         // Fallback to database if cache fails
+        //         const user: IAuth | null = await User.findById(userId);
+                
+        //         if (!user) {
+        //             return res.status(404).json({ message: "User not found" });
+        //         }
+    
+        //         return res.status(200).json({ user });
+        //     }
+        // } catch (error) {
+        //     console.error('Error in getUser:', error);
+        //     return res.status(500).json({ message: "Internal server error" });
+        // }
+
+
         try {
-            const isRedisConnected = await validateRedisConnection();
-            if (!isRedisConnected) {
-                return res.status(500).json({ message: "Redis connection error" });
+
+            const userId = (req as any).userId;
+            const user: IAuth | null = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ message: "User not found" })
             }
-    
-            const userId = (req as any).userId; // Consider creating a custom Request type with userId
-            console.log(`Fetching user:${userId}`);
-    
-            try {
-                // Try to get user from cache
-                const cachedUser = await getUserFromCache(userId);
-                
-                if (cachedUser) {
-                    console.log(`Cache hit for user:${userId}`);
-                    return res.status(200).json({ user: cachedUser });
-                }
-    
-                console.log(`Cache miss for user:${userId}`);
-                // User not in cache, fetch from database
-                const user: IAuth | null = await User.findById(userId);
-                
-                if (!user) {
-                    return res.status(404).json({ message: "User not found" });
-                }
-    
-                // Cache the user
-                await setUserToCache(userId, user);
-    
-                return res.status(200).json({ user });
-            } catch (cacheError) {
-                console.error('Cache operation failed:', cacheError);
-                // Fallback to database if cache fails
-                const user: IAuth | null = await User.findById(userId);
-                
-                if (!user) {
-                    return res.status(404).json({ message: "User not found" });
-                }
-    
-                return res.status(200).json({ user });
-            }
+            return res.status(200).json({ user });
+            
         } catch (error) {
-            console.error('Error in getUser:', error);
-            return res.status(500).json({ message: "Internal server error" });
+            console.log(error)
+            return res.status(500).json({ message: "Something went wrong" })
+            
         }
+
     }
     
     
